@@ -11,7 +11,7 @@ pool:
   
 variables:
 - name: PackageVersion
-  value: '1.0.1'
+  value: '1.0.2'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -20,8 +20,7 @@ steps:
     command: 'build'
     projects: 'src/Microsoft.Health.Fhir.SpecManager/Microsoft.Health.Fhir.SpecManager.csproj'
 
-- task: NuGetCommand@2
-  displayName: 'Pack SpecManager'
+- task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
     packagesToPack: 'src/Microsoft.Health.Fhir.SpecManager/Microsoft.Health.Fhir.SpecManager.csproj'
