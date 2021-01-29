@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+  demands:
+  
+variables:
+- name: PackageVersion
+  value: 1.0.0 
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Build SpecManager
+  inputs:
+    command: 'build'
+    projects: 'src/Microsoft.Health.Fhir.SpecManager/Microsoft.Health.Fhir.SpecManager.csproj'
+
+- task: NuGetCommand@2
+  displayName: Pack SpecManager
+  inputs:
+    command: 'pack'
+    packagesToPack: 'src/Microsoft.Health.Fhir.SpecManager/Microsoft.Health.Fhir.SpecManager.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'PackageVersion'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: '2d2aead0-1e9f-4e74-92f7-30628c7207be/28fac8ea-0369-45fc-8193-b139631b9c18'
+    allowPackageConflicts: true
