@@ -14,8 +14,14 @@ variables:
   value: '1.0.1'
 
 steps:
+- task: DotNetCoreCLI@2
+  displayName: 'Build SpecManager'
+  inputs:
+    command: 'build'
+    projects: 'src/Microsoft.Health.Fhir.SpecManager/Microsoft.Health.Fhir.SpecManager.csproj'
+
 - task: NuGetCommand@2
-  displayName: Pack SpecManager
+  displayName: 'Pack SpecManager'
   inputs:
     command: 'pack'
     packagesToPack: 'src/Microsoft.Health.Fhir.SpecManager/Microsoft.Health.Fhir.SpecManager.csproj'
@@ -23,6 +29,7 @@ steps:
     versionEnvVar: 'PackageVersion'
 
 - task: NuGetCommand@2
+  displayName: 'Push SpecManager'
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
